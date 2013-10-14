@@ -18,5 +18,5 @@ BSD 3-Clause
 
 Contribute
 =====
-Everyone is welcome to contribute and develope or fork this repo.
+Everyone are welcome to contribute and develope or fork this repo.
 

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>nvcnvn:NChat</id>
+	<version>1.3.2</version>
+	<file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="after"><![CDATA[						// Mod Authors for a "ADD AFTER" on this line. Ensure you end your change with a comma. For example:]]></search>
+			<add><![CDATA[
+						//NChat by ThisMod.com
+						'nchat' => array($txt['nchat_name']),
+			]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="after"><![CDATA[	// All permission groups that will be shown in the left column on classic view.]]></search>
+			<add><![CDATA[
+	//NChat by ThisMod.com
+	$permissionList['membergroup']['nchat_mute'] = array(false, 'general', 'nchat');
+	$permissionList['membergroup']['nchat_delete'] = array(false, 'general', 'nchat');
+	$permissionList['membergroup']['nchat_write'] = array(false, 'general', 'nchat');
+	$permissionList['membergroup']['nchat_read'] = array(false, 'general', 'nchat');
+			]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/ManageSettings.php">
+		<operation>
+		<search position="after"><![CDATA[		// Mod authors, once again, if you have a whole section to add do it AFTER this line, and keep a comma at the end.]]></search>
+		<add><![CDATA[
+		//NChat by ThisMod.com
+		'nchat' => 'nchatSettings',]]></add>
+		</operation>
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//NChat by ThisMod.com
+function nchatSettings($return_config = false)
+{
+	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+
+	$config_vars = array(
+		array('text', 'nchat_admin_mess', 'size' => 50),
+	'',
+		array('select', 'nchat_order', array($txt['nchat_order_first'], $txt['nchat_order_last'])),
+		array('select', 'nchat_sound', array($txt['nchat_disable_sound'], $txt['nchat_enable_sound'])),
+		array('select', 'nchat_censor', array($txt['nchat_disable_censor'], $txt['nchat_enable_censor'])),
+		array('select', 'nchat_smile', array($txt['nchat_disable_smileys'], $txt['nchat_ym_smileys'], $txt['nchat_smf_smileys'])),
+		array('select', 'nchat_auto_link', array($txt['nchat_disable_auto_link'], $txt['nchat_enable_auto_link'])),
+	'',
+		array('int', 'nchat_time'),
+		array('int', 'nchat_line'),
+		array('int', 'nchat_lenght'),
+	'',
+		array('text', 'nchat_text'),
+		array('text', 'nchat_background'),
+	'',
+		array('text', 'nchat_time_format'),
+	);
+
+
+	if ($return_config)
+		return $config_vars;
+
+	$context['post_url'] = $scripturl . '?action=admin;area=modsettings;save;sa=nchat';
+	$context['settings_title'] = $txt['mods_cat_modifications_misc'];
+
+
+	if (empty($config_vars))
+	{
+		$context['settings_save_dont_show'] = true;
+		$context['settings_message'] = '<div class="centertext">' . $txt['modification_no_misc_settings'] . '</div>';
+
+		return prepareDBSettingContext($config_vars);
+	}
+
+
+	if (isset($_GET['save']))
+	{
+		checkSession();
+
+		$save_vars = $config_vars;
+
+
+		saveDBSettings($save_vars);
+
+
+		redirectexit('action=admin;area=modsettings;sa=nchat');
+	}
+
+	prepareDBSettingContext($config_vars);
+}]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/BoardIndex.template.php">
+		<operation>
+			<search position="before"><![CDATA[function template_main()
+{]]></search>
+			<add><![CDATA[
+	global $boarddir, $boardurl;]]></add>
+		</operation>		
+		<operation>
+			<search position="after"><![CDATA[	// Show some statistics if stat info is off.]]></search>
+			<add><![CDATA[
+	//NChat by ThisMod.com
+	require_once($boarddir."/NChat/NChatBoardIndex.php");
+	]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+/* NChat by ThisMod.com */
+$txt['nchat_name'] = 'NChat Shoutbox';
+$txt['nchat_chatbox'] = 'Chat Box';
+$txt['nchat_save'] = 'Save';
+$txt['nchat_clean'] = 'Clean All';
+
+$txt['nchat_blod'] = 'B';
+$txt['nchat_italic'] = 'I';
+$txt['nchat_underline'] = 'U';
+
+$txt['nchat_default_color'] = 'Default color';
+$txt['nchat_red'] = 'Red';
+$txt['nchat_teal'] = 'Teal';
+$txt['nchat_blue'] = 'Blue';
+$txt['nchat_green'] = 'Green';
+$txt['nchat_brown'] = 'Brown';
+$txt['nchat_orange'] = 'Orange';
+
+$txt['nchat_admin_mess'] = 'Admin Message';
+
+$txt['nchat_order'] = 'Order';
+$txt['nchat_order_first'] = 'First line on top';
+$txt['nchat_order_last'] = 'Last line on top';
+
+$txt['nchat_sound'] = 'Enable Sound<br /><span class="smalltext">Work only with `First line n top`.</span>';
+$txt['nchat_disable_sound'] = 'Disable Sound';
+$txt['nchat_enable_sound'] = 'Enable Sound';
+
+$txt['nchat_censor'] = 'Censored Words';
+$txt['nchat_disable_censor'] = 'Disable Censored Words';
+$txt['nchat_enable_censor'] = 'Enable Censored Words';
+
+$txt['nchat_smile'] = 'Smlies Option';
+$txt['nchat_disable_smileys'] = 'Disable Smiles';
+$txt['nchat_smf_smileys'] = 'SMF Smiles';
+$txt['nchat_ym_smileys'] = 'Yahoo Smiles';
+
+$txt['nchat_add_smileys'] = 'Add Smiles';
+$txt['nchat_more_smileys'] = 'More...';
+
+$txt['nchat_auto_link'] = 'Auto-link';
+$txt['nchat_disable_auto_link'] = 'Disable Auto-link';
+$txt['nchat_enable_auto_link'] = 'Enable Auto-link';
+
+$txt['nchat_disable_consensor'] = 'Disable Censored Words';
+$txt['nchat_enable_consensor'] = 'Enable Censored Words';
+
+$txt['nchat_time'] = 'Reload time<br /><span class="smalltext">in miliseconds</span>';
+
+$txt['nchat_line'] = 'Number of message';
+
+$txt['nchat_lenght'] = 'Lenght of Message';
+
+$txt['nchat_text'] = 'Default text color';
+$txt['nchat_background'] = 'Default background color';
+
+$txt['nchat_time_format'] = 'Time format';
+
+$txt['nchat_mute_list'] = 'Mute List Manager';
+$txt['nchat_add_mute'] = 'Mute this user (in minutes)';
+$txt['nchat_remove_mute'] = 'Remove';
+$txt['nchat_be_muted'] = '<u>%s</u> - was muted by <i>%s</i> from now to %s.';
+
+$txt['nchat_so_fast'] = 'Slow down! You type so fast!!';
+$txt['nchat_empty_mess'] = 'Empty message!';
+$txt['nchat_index_unavailable'] = 'The ./nchat/index.php is now unavailable! Please contact admin forum about this issue!';
+//nchat permission area
+$txt['permissiongroup_simple_nchat'] = 'NChat PLay around with the chat box.';
+
+$txt['permissionname_nchat_mute'] = 'Mute a member from chat.';
+$txt['permissionhelp_nchat_mute'] = 'Mute a member fro chat, but you cannot mute the Admin.';
+$txt['cannot_nchat_mute'] = 'Sorry, but you can\'t mute any member!.';
+
+$txt['permissionname_nchat_delete'] = 'Delete a chat message.';
+$txt['permissionhelp_nchat_delete'] = 'Delete the message in the chat box.';
+$txt['cannot_nchat_delete'] = 'Sorry, but you can\'t delete the chat content.';
+
+$txt['permissionname_nchat_write'] = 'Write something and chat.';
+$txt['permissionhelp_nchat_write'] = 'Join the chat box and talkative.';
+$txt['cannot_nchat_write'] = 'Sorry, but you can\'t write to the chat box.';
+
+$txt['permissionname_nchat_read'] = 'Read the chat content.';
+$txt['permissionhelp_nchat_read'] = 'See waht the other shout in our big chat box.';
+$txt['cannot_nchat_read'] = 'Sorry, but you can\'t read the chat content.';
+/* NChat by ThisMod.com */]]></add>
+		</operation>
+	</file>
+</modification>

@@ -66,7 +66,7 @@ function NChatWriter($subject = ''){
 			else
 				$format .= '|!|-';
 
-			$format .= '|!|'.$nchatInfo['id'].'|!|'.$nchatInfo['name'].'|!|'.$nchatInfo['time'];
+			$format .= '|!|'.$nchatInfo['id'].'|!|'.utf8_encode($nchatInfo['name']).'|!|'.$nchatInfo['time'];
 
 			$mess[] = $format.'|!|'.$subject.'|!|'.$nchatInfo['group'];
 
